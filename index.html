@@ -212,5 +212,31 @@ renderProducts(category);
 renderProducts();
 renderCart();
 </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://wdnibzgycsqjsezcqfdy.supabase.co/rest/v1/";
+const SUPABASE_KEY = "sb_publishable_1amfUA5P8M9LhUmS1fd_sg_yHV82Qch";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+async function tampilkanProduk() {
+  const { data, error } = await supabaseClient
+    .from("products")
+    .select("*");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  console.log("Produk BAFIZA:", data);
+}
+
+tampilkanProduk();
+</script>
 </body>
 </html>
