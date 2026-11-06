@@ -72,18 +72,11 @@ footer{background:#171717;color:white;text-align:center;padding:25px;font-size:1
 
 <div class="filters">
 <button class="active" onclick="filterProducts('all',this)">All</button>
-<button onclick="filterProducts('men',this)">Men</button>
-<button onclick="filterProducts('women',this)">Women</button>
-<button onclick="filterProducts('shoes',this)">Shoes</button>
-</div>
-
-<div class="products" id="productList"></div>
-
-<div class="cart" id="cart">
-<h2>🛒 Shopping Cart</h2>
-<div id="cartItems"><p class="empty">Keranjang masih kosong.</p></div>
-<div class="total" id="total">Total: Rp0</div>
-<button class="checkout" onclick="checkout()">Checkout via WhatsApp</button>
+<button onclick="filterProducts('Kaos',this)">Kaos</button>
+<button onclick="filterProducts('Kemeja',this)">Kemeja</button>
+<button onclick="filterProducts('Celana',this)">Celana</button>
+<button onclick="filterProducts('Hoodie',this)">Hoodie</button>
+<button onclick="filterProducts('Lainnya',this)">Lainnya</button>
 </div>
 </section>
 
@@ -100,14 +93,7 @@ footer{background:#171717;color:white;text-align:center;padding:25px;font-size:1
 <script>
 const whatsappNumber="6283822230126";
 
-const products=[
-{id:1,name:"Oversized T-Shirt",price:99000,category:"men",image:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600"},
-{id:2,name:"Daily Blouse",price:119000,category:"women",image:"https://images.unsplash.com/photo-1551163943-3f6a855d1153?w=600"},
-{id:3,name:"Casual Pants",price:149000,category:"men",image:"https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600"},
-{id:4,name:"Elegant Outfit",price:139000,category:"women",image:"https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600"},
-{id:5,name:"Daily Sneakers",price:199000,category:"shoes",image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600"},
-{id:6,name:"Casual Shirt",price:129000,category:"men",image:"https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=600"}
-];
+let products = [];
 
 let cart=JSON.parse(localStorage.getItem("bafizaCart")||"[]");
 
@@ -118,6 +104,7 @@ return "Rp"+value.toLocaleString("id-ID");
 function renderProducts(category="all"){
 const list=document.getElementById("productList");
 list.innerHTML="";
+
 products.filter(p=>category==="all"||p.category===category).forEach(p=>{
 list.innerHTML+=`
 <div class="product">
@@ -229,11 +216,17 @@ async function tampilkanProduk() {
     .select("*");
 
   if (error) {
-    console.error(error);
+    console.error("Gagal mengambil produk:", error);
     return;
   }
 
-  console.log("Produk BAFIZA:", data);
+  products = data.map(p => ({
+    ...p,
+    image: p.image_url || "https://placehold.co/600x600?text=BAFIZA"
+  }));
+
+  renderProducts();
+  console.log("Produk BAFIZA:", products);
 }
 
 tampilkanProduk();
