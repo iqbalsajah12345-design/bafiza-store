@@ -424,53 +424,65 @@ renderProducts(category);
 // MENGAMBIL PRODUK DARI SUPABASE
 // =================================
 
+
 async function tampilkanProduk(){
 
 const list = document.getElementById("productList");
 
-try{
+list.innerHTML = '<p class="empty">Menghubungkan ke Supabase...</p>';
+
+try {
+
+if (!window.supabase) {
+throw new Error("Library Supabase gagal dimuat. Periksa koneksi internet.");
+}
+
+if (!supabaseClient) {
+throw new Error("Supabase Client belum tersedia.");
+}
 
 const { data, error } = await supabaseClient
 .from("products")
 .select("*");
 
-if(error){
-
-console.error("Gagal mengambil produk:",error);
-
+if (error) {
+console.error("SUPABASE ERROR:", error);
 list.innerHTML = `
-<p class="empty">Gagal memuat produk. Periksa koneksi Supabase.</p>
-`;
-
+<p class="empty">
+Gagal mengambil produk: ${error.message}
+</p>`;
 return;
+}
 
+if (!data || data.length === 0) {
+list.innerHTML = `
+<p class="empty">Database terhubung, tetapi belum ada produk.</p>`;
+return;
 }
 
 products = data.map(p => ({
-
 ...p,
-
 image: p.image_url || "https://placehold.co/600x600?text=BAFIZA"
-
 }));
 
-console.log("Produk BAFIZA:",products);
+console.log("Produk berhasil dimuat:", products);
 
 renderProducts();
-
 renderCart();
 
-}catch(error){
+} catch (error) {
 
-console.error("Terjadi kesalahan:",error);
+console.error("BAFIZA ERROR:", error);
 
 list.innerHTML = `
-<p class="empty">Terjadi kesalahan saat memuat produk.</p>
-`;
+<p class="empty">
+Terjadi kesalahan: ${error.message}
+</p>`;
 
 }
 
 }
+
 
 // =================================
 // JALANKAN WEBSITE
